@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, SniperActivity!</string>
+    <string name="app_name">MyWeather</string>
+    <string name="dialogtitle">正在初始化</string>
+    <string name="qiwen">气温</string>
+    <string name="fengli">风力</string>
+    <string name="fengxiang">风向</string>
+    <string name="weilai">未来四天天气预报</string>
+    <string name="wendu">温度</string>
+    <string name="dialogcontent">请稍后</string>
+    
+    
+    
+    
+       
+</resources>
