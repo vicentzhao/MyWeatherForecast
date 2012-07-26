@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScrollView android:id="@+id/weather_query"
+ android:orientation="vertical" android:layout_width="fill_parent"
+ android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout android:layout_gravity="center"
+              xmlns:android="http://schemas.android.com/apk/res/android" 
+              android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              >
+<LinearLayout android:orientation="vertical"
+              xmlns:android="http://schemas.android.com/apk/res/android" 
+              android:layout_height="wrap_content"  android:layout_width="fill_parent">
+
+    <TextView  android:layout_width="wrap_content"
+                       android:layout_marginTop="20dip"
+                       android:layout_height="wrap_content"
+                       android:textColor="#99ff99"
+                       android:textSize="20dip"
+                       android:text="请选择要查看的城市" />
+                        <TextView  android:layout_width="wrap_content"
+                       android:layout_height="20dip"
+                        />
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1.0">
+        <LinearLayout
+                 android:layout_width="fill_parent"
+                 android:orientation="vertical"
+                 android:layout_height="wrap_content">
+                 
+            <TextView  android:layout_width="wrap_content"
+                       android:layout_height="30dip"
+                       android:textColor="#0066ff"
+                       android:textSize="20dip"
+                       android:text="省份 : " />
+                     
+            <Spinner 
+                      android:id="@+id/spiner_pro"
+                      android:textColor="#0066ff"
+                      
+                      android:layout_weight="1.0" android:layout_height="fill_parent" android:layout_width="fill_parent"/>
+        </LinearLayout>
+        <LinearLayout   android:layout_width="fill_parent"
+        				android:orientation="vertical"
+                        android:layout_height="wrap_content">
+            <TextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="30dip"
+                      android:textSize="20dip"
+                      android:textColor="#0066ff"
+                      android:text="城市 : " />
+            <Spinner
+                     android:id="@+id/spiner_dist"
+                     android:layout_height="wrap_content" android:layout_width="fill_parent"/>
+        </LinearLayout>
+        <LinearLayout   android:layout_width="fill_parent"
+        				android:orientation="vertical"
+                        android:layout_height="wrap_content">
+            <TextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="30dip"
+                      android:textColor="#0066ff"
+                      android:textSize="20dip"
+                      android:text="县区 : " />
+            <Spinner
+                     android:id="@+id/spiner_city"
+                     android:layout_height="wrap_content" android:layout_width="fill_parent"/>
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="30dip"
+                      android:textColor="#0066ff"
+                      android:textSize="10dip"
+                      ></TextView>
+    <FrameLayout android:layout_width="fill_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_weight="1.0">
+
+    </FrameLayout>
+ <TextView android:textColor="#ffff0000"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content" />
+    <LinearLayout android:layout_width="fill_parent"
+                  android:orientation="horizontal"
+                 android:layout_height="wrap_content" >
+</LinearLayout>
+</LinearLayout>
+</LinearLayout>
+</ScrollView>
+
+
