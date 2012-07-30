@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.view.KeyEvent;
 import android.view.View;
@@ -62,6 +63,9 @@ public class MyWeatherActivity implements Runnable {
 	private View forcast_reflash;
 	private TextView spinner_textview;
 	private Button nextday1;
+	private Button nextday2;
+	private Button nextday3;
+	private Button nextday4;
 
 	private static final String LOG_TAG = "MyWeather";
 	private int isToday = 1;
@@ -182,6 +186,10 @@ public class MyWeatherActivity implements Runnable {
 					tianqi.setText(etianqi);
 					String eimage = weatherInfo.getImg_title1();
 					getImage(eimage);
+					setButton(0, nextday1);
+					setButton(1, nextday2);
+					setButton(2, nextday3);
+					setButton(3, nextday4);
 				} else {
 					shezhi_button.setFocusable(true);
 					SharedPreferences citysetting = mContext
@@ -197,7 +205,7 @@ public class MyWeatherActivity implements Runnable {
 					tianqi.setText(templist.get(numberofdata));
 					String eimage = imagelist.get(numberofdata);
 					getImage(eimage);
-					shezhi_button.setVisibility(View.GONE);
+					setButton(0, nextday1);
 				}
 				super.onPostExecute(result);
 			}
@@ -244,6 +252,7 @@ public class MyWeatherActivity implements Runnable {
 			Toast.makeText(mContext, "nextday1,我已经被点击", 1).show();
 			}
 		});
+		
 	}
 	/**
 	 * 初始化数据
@@ -270,6 +279,10 @@ public class MyWeatherActivity implements Runnable {
 		spinner_textview = (TextView) view.findViewById(R.id.spinner_textview);
 		forcast_reflash = (View) view.findViewById(R.id.forcast_reflash);
 		 nextday1 = (Button) view.findViewById(R.id.nextday1);
+		 nextday2 = (Button) view.findViewById(R.id.nextday2);
+		 nextday3 = (Button) view.findViewById(R.id.nextday3);
+		 nextday4 = (Button) view.findViewById(R.id.nextday4);
+		 
 	}
 	/**
 	 * 通过不同的描述选用相应的图片
@@ -292,6 +305,28 @@ public class MyWeatherActivity implements Runnable {
 				|| "暴雪".equals(eimage)) {
 			image.setImageResource(R.drawable.weather_snow);
 		}
+	}
+	
+	/**
+	 * 得到相应的图片资源
+	 */
+	private int getImageResource(String eimage) {
+		if ("多云".equals(eimage)) {
+			return R.drawable.weather_mostlycloudy;
+		} else if ("晴".equals(eimage)) {
+			return R.drawable.weather_fog;
+		} else if ("阴".equals(eimage)) {
+			return R.drawable.weather_dust;
+			// }else
+			// if("小雨".equals(eimage)||"大雨".equals(eimage)||"中雨".equals(eimage)||"暴雨".equals(eimage)||"阵雨".equals(eimage)){
+		} else if (eimage.contains("雨")) {
+			return R.drawable.weather_rain;
+		} else if ("阵雪".equals(eimage) || "小雪".equals(eimage)
+				|| "大雪".equals(eimage) || "中雪".equals(eimage)
+				|| "暴雪".equals(eimage)) {
+			return R.drawable.weather_snow;
+		}
+		return 0;
 	}
 
 	/**
@@ -395,7 +430,6 @@ public class MyWeatherActivity implements Runnable {
 					public void onNothingSelected(AdapterView<?> arg0) {
 					}
 				});
-
 		// 选择市区事件
 		spiner_dist
 				.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
@@ -438,41 +472,8 @@ public class MyWeatherActivity implements Runnable {
 					public void onNothingSelected(AdapterView<?> arg0) {
 					}
 				});
-		/**
-		 * 设置弹出框
-		 */
-
-		// final AlertDialog.Builder builder = new AlertDialog.Builder(
-		// new ContextThemeWrapper(mContext, R.style.dialog));
-		// builder.setCancelable(false);
-		// builder.setIcon(R.drawable.icon);
-		// builder.setTitle("选择地区");
-		// builder.setView(textEntryView);
-		// builder.setPositiveButton("确认", new DialogInterface.OnClickListener()
-		// {
-		// public void onClick(DialogInterface dialog, int whichButton) {
-		// SharedPreferences citysetting = mContext.getSharedPreferences(
-		// "setting", Context.MODE_PRIVATE);
-		// Editor edit = citysetting.edit();
-		// edit.putString("private_city", citynameforselct);
-		// edit.commit();
-		// String string = citysetting.getString("private_city", "hello");
-		// run();
-		// }
-		// });
-		// builder.setNegativeButton("取消", new DialogInterface.OnClickListener()
-		// {
-		// public void onClick(DialogInterface dialog, int whichButton) {
-		// }
-		// });
-		// AlertDialog dialog = builder.create();
-		// builder.show();
-		// WindowManager.LayoutParams params =
-		// dialog.getWindow().getAttributes();
-		// params.width = 10;
-		// params.height = 10;
-		// dialog.getWindow().setAttributes(params);
 		confirm.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
 				selectcity.setVisibility(View.GONE);
@@ -488,14 +489,32 @@ public class MyWeatherActivity implements Runnable {
 			}
 		});
 		cancle.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
 				selectcity.setVisibility(View.GONE);
 				tvforcastshow.setVisibility(View.VISIBLE);
+
 			}
 		});
-	}
 
+	}
+    //设置相应的button的显示
+	public  void setButton(int i,Button bt){
+		String qiwen = templist.get(i);
+		String week = weeklist.get(i);
+		String image = imagelist.get(i);
+		
+		int resource = getImageResource(image);
+		if(resource!=0){
+			Drawable drawable = mContext.getResources().getDrawable(resource);
+			drawable.setBounds(0, 0, 100, 100);
+			bt.setCompoundDrawables(null, null, drawable, null);
+			String showText = week+"\n"+image+"\n"+qiwen;
+			bt.setText(showText);
+			System.out.println("这个是第"+i+"个"+image+showText);
+		}
+	}
 	// 单击事件
 	private class sCarButtonListener implements
 			android.view.View.OnClickListener {
@@ -510,5 +529,13 @@ public class MyWeatherActivity implements Runnable {
 		System.out.println("distime===========>" + distime);
 		startTimer = currenttimer;
 		return distime;
+	}
+	//得到下面几天的日期
+	public String[] getDate(int i){
+		Calendar c = Calendar.getInstance();
+		c.add(c.DAY_OF_YEAR, i);
+		DateUtil dt = new DateUtil();
+		String[] currDay = dt.getCurrDay(c);
+		return currDay;
 	}
 }

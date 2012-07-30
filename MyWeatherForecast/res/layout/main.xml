@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="8"
+            android:layout_weight="2"
             android:visibility="invisible" />
 
         <LinearLayout
@@ -22,12 +22,13 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginTop="30dip"
-            android:layout_weight="2"
+            android:layout_weight="8"
             android:orientation="horizontal" >
 
             <LinearLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/tvforcastshow"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:orientation="vertical" >
@@ -142,6 +143,7 @@
          android:drawableRight="@drawable/w0"
          android:layout_marginTop="0dp"></Button>
       <Button android:layout_width="fill_parent"
+          android:id="@+id/nextday2"
            android:background="@drawable/nextbutton_selector"
            android:layout_weight="7"
            android:textColor="#00FF7F"
@@ -151,6 +153,7 @@
          android:layout_marginTop="5dp">
       </Button>
        <Button android:layout_width="fill_parent"
+           android:id="@+id/nextday3"
          android:layout_height="fill_parent"
          android:layout_weight="7"
          android:textColor="#00FF7F"
@@ -159,6 +162,7 @@
          android:drawableRight="@drawable/w2"
          android:layout_marginTop="5dp"></Button>
        <Button android:layout_width="fill_parent"
+           android:id="@+id/nextday4"
            android:layout_weight="7"
            android:textColor="#00FF7F"
          android:layout_height="fill_parent"
@@ -171,11 +175,13 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:id="@+id/forcast_reflash"
+                android:visibility="gone"
                 android:layout_height="fill_parent" >
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:background="#AA111111"
+                        
                         android:gravity="center"
                         android:padding="8dip" >
                         <ProgressBar
@@ -198,16 +204,13 @@
                             android:text="正在努力加载中.."
                             android:textColor="#FFFFFF" />
                     </LinearLayout>
-               
             </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/selectcity"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical"
-                android:visibility="gone" >
-
+                >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -236,8 +239,8 @@
 
                         <Spinner
                             android:id="@+id/spiner_pro"
-                            android:layout_width="95dp"
-                            android:layout_height="20dp"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:layout_marginLeft="20dp"
                             android:background="@drawable/drop_list" />
@@ -257,8 +260,8 @@
 
                         <Spinner
                             android:id="@+id/spiner_dist"
-                            android:layout_width="95dp"
-                            android:layout_height="20dp"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:layout_marginLeft="20dp"
                             android:background="@drawable/drop_list" />
@@ -278,16 +281,18 @@
 
                         <Spinner
                             android:id="@+id/spiner_city"
-                            android:layout_width="95dp"
-                            android:layout_height="20dp"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:layout_marginLeft="20dp"
                             android:background="@drawable/drop_list" />
                     </LinearLayout>
 
                     <LinearLayout
+                        android:layout_marginTop="20dip"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
                         android:orientation="horizontal" >
 
                         <Button
@@ -295,6 +300,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/buttonselect"
+                            android:layout_marginRight="10dip"
                             android:text="确定 "
                             android:textColor="#ffffff"
                             android:textSize="20dip" />
