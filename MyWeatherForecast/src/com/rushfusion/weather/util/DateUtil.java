@@ -10,28 +10,28 @@ public class DateUtil {
 		  int cw =c.get(Calendar.DAY_OF_WEEK);
 		  switch (cw) {
 			case 2:
-				week ="ĞÇÆÚÒ»";
+				week ="æ˜ŸæœŸä¸€";
 				break;
 			case 3:
-				week ="ĞÇÆÚ¶ş";
+				week ="æ˜ŸæœŸäºŒ";
 				break;
 			case 4:
-				week ="ĞÇÆÚÈı";
+				week ="æ˜ŸæœŸä¸‰";
 				break;
 			case 5:
-				week ="ĞÇÆÚËÄ";
+				week ="æ˜ŸæœŸå››";
 				break;
 			case 6:
-				week ="ĞÇÆÚÎå";
+				week ="æ˜ŸæœŸäº”";
 				break;
 			case 7:
-				week="ĞÇÆÚÁù";
+				week="æ˜ŸæœŸå…­";
 				break;
 			case 1:
-				week="ĞÇÆÚÌì";
+				week="æ˜ŸæœŸå¤©";
 				break;		
 		}
-		  String eday =cy+"Äê"+(cm+1)+"ÔÂ"+cd+"ÈÕ";
+		  String eday =cy+"å¹´"+(cm+1)+"æœˆ"+cd+"æ—¥";
 		  String eweek =week;
 		  String[] date = new String[]{eday,eweek};
 		  return date;
@@ -48,32 +48,68 @@ public class DateUtil {
 		  switch (cw) {
 
 			case 2:
-				week ="ĞÇÆÚÒ»";
+				week ="æ˜ŸæœŸä¸€";
 				break;
 			case 3:
-				week ="ĞÇÆÚ¶ş";
+				week ="æ˜ŸæœŸäºŒ";
 				break;
 			case 4:
-				week ="ĞÇÆÚÈı";
+				week ="æ˜ŸæœŸä¸‰";
 				break;
 			case 5:
-				week ="ĞÇÆÚËÄ";
+				week ="æ˜ŸæœŸå››";
 				break;
 			case 6:
-				week ="ĞÇÆÚÎå";
+				week ="æ˜ŸæœŸäº”";
 				break;
 			case 7:
-				week="ĞÇÆÚÁù";
+				week="æ˜ŸæœŸå…­";
 				break;
 			case 1:
-				week="ĞÇÆÚÌì";
+				week="æ˜ŸæœŸå¤©";
 				break;
 			
 		}
 		  String eyear=null;
-		   eyear = cy+"Äê"+(cm+1)+"ÔÂ"+cd+"ÈÕ";
+		   eyear = cy+"å¹´"+(cm+1)+"æœˆ"+cd+"æ—¥";
 		   String eweek = week;
 		   String[] s = new String[]{eyear,eweek};
 		   return s;
 	  }
+	  
+	  //è®¡ç®—ä¸‹ä¸€å¤©æˆ–å‰ä¸€å¤©
+		public String[] getCurrDay( Calendar  c){
+			String week = null;
+			 int cy =c.get(Calendar.YEAR);
+			  int cm =c.get(Calendar.MONTH);
+			  int cd = c.get(Calendar.DAY_OF_MONTH);
+			  int cw =c.get(Calendar.DAY_OF_WEEK);
+			  switch (cw) {
+				case 2:
+					week ="æ˜ŸæœŸä¸€";
+					break;
+				case 3:
+					week ="æ˜ŸæœŸäºŒ";
+					break;
+				case 4:
+					week ="æ˜ŸæœŸä¸‰";
+					break;
+				case 5:
+					week ="æ˜ŸæœŸå››";
+					break;
+				case 6:
+					week ="æ˜ŸæœŸäº”";
+					break;
+				case 7:
+					week="æ˜ŸæœŸå…­";
+					break;
+				case 1:
+					week="æ˜ŸæœŸå¤©";
+					break;		
+			}
+			  String eday =cy+"å¹´"+(cm+1)+"æœˆ"+cd+"æ—¥";
+			  String eweek =week;
+			  String[] date = new String[]{eday,eweek};
+			  return date;
+		}
 }

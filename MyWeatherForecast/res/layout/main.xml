@@ -19,7 +19,7 @@
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginTop="30dip"
             android:layout_weight="2"
@@ -31,16 +31,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:orientation="vertical" >
-
+   <LinearLayout
+                    android:id="@+id/linearLayout1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="4"
+                    android:layout_gravity="right"
+                    android:orientation="vertical" >
                 <LinearLayout
                     android:id="@+id/linearLayout1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
                     android:orientation="horizontal" >
 
                     <LinearLayout
-                        android:id="@+id/linearLayout1"
+                        android:id="@+id/linearLayout2"
                         android:layout_width="wrap_content"
                         android:layout_height="fill_parent"
                         android:orientation="vertical" >
@@ -103,16 +108,15 @@
 
                         <ImageView
                             android:id="@+id/iamge"
+                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
-
                         <TextView
                             android:id="@+id/curntime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="20dip" >
                         </TextView>
-
                         <TextView
                             android:id="@+id/week"
                             android:layout_width="wrap_content"
@@ -121,30 +125,88 @@
                         </TextView>
                     </LinearLayout>
                 </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearLayout1"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:orientation="horizontal" >
-                </LinearLayout>
-
                 <Button
                     android:id="@+id/shezhi_button"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/wp_button"
-                    android:text="设置城市"
+                    android:layout_height="40dip"
+                    android:background="@drawable/selectcity_list"
                     android:textColor="#990066" />
+          </LinearLayout>
+      <Button android:id="@+id/nextday1"
+          android:textColor="#00FF7F"
+          android:layout_width="fill_parent"
+         android:layout_height="fill_parent"
+         android:layout_weight="7"
+         android:text="周二\nxx℃/xx℃"
+         android:background="@drawable/nextbutton_selector"
+         android:drawableRight="@drawable/w0"
+         android:layout_marginTop="0dp"></Button>
+      <Button android:layout_width="fill_parent"
+           android:background="@drawable/nextbutton_selector"
+           android:layout_weight="7"
+           android:textColor="#00FF7F"
+         android:layout_height="fill_parent"
+         android:text="周三\nxx℃/xx℃"
+         android:drawableRight="@drawable/w1"
+         android:layout_marginTop="5dp">
+      </Button>
+       <Button android:layout_width="fill_parent"
+         android:layout_height="fill_parent"
+         android:layout_weight="7"
+         android:textColor="#00FF7F"
+         android:text="周四\nxx℃/xx℃"
+          android:background="@drawable/nextbutton_selector"
+         android:drawableRight="@drawable/w2"
+         android:layout_marginTop="5dp"></Button>
+       <Button android:layout_width="fill_parent"
+           android:layout_weight="7"
+           android:textColor="#00FF7F"
+         android:layout_height="fill_parent"
+         android:text="周五\nxx℃/xx℃"
+          android:background="@drawable/nextbutton_selector"
+         android:drawableRight="@drawable/w3"
+         android:layout_marginTop="5dp"
+         android:layout_marginBottom="5dp"></Button>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:id="@+id/forcast_reflash"
+                android:layout_height="fill_parent" >
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="#AA111111"
+                        android:gravity="center"
+                        android:padding="8dip" >
+                        <ProgressBar
+                            android:id="@+id/progress"
+                            android:layout_width="24dip"
+                            android:layout_height="24dip"
+                            android:layout_marginBottom="6dip"
+                            android:layout_marginTop="6dip"
+                            android:indeterminate="true"
+                            android:indeterminateDrawable="@drawable/iamge_progress" />
+                        <TextView
+                            android:id="@+id/txt_loading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dip"
+                            android:shadowColor="#000000"
+                            android:shadowDx="0"
+                            android:shadowDy=".5"
+                            android:shadowRadius="1"
+                            android:text="正在努力加载中.."
+                            android:textColor="#FFFFFF" />
+                    </LinearLayout>
+               
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/selectcity"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:visibility="gone"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:visibility="gone" >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -153,7 +215,6 @@
                     android:text="请选择要查看的城市"
                     android:textColor="#99ff99"
                     android:textSize="20dip" />
-
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -172,13 +233,14 @@
                             android:text="省份 : "
                             android:textColor="#0066ff"
                             android:textSize="20dip" />
-                        <Spinner 
-        android:id="@+id/spiner_pro"
-		android:layout_marginLeft="20dp"
-		android:background="@drawable/drop_list"
-		android:layout_width="95dp"
-		android:layout_height="20dp"
-		android:layout_centerHorizontal="true"/>
+
+                        <Spinner
+                            android:id="@+id/spiner_pro"
+                            android:layout_width="95dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="20dp"
+                            android:background="@drawable/drop_list" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -192,13 +254,14 @@
                             android:text="城市 : "
                             android:textColor="#0066ff"
                             android:textSize="20dip" />
-                 <Spinner 
-        android:id="@+id/spiner_dist"
-		android:layout_marginLeft="20dp"
-		android:background="@drawable/drop_list"
-		android:layout_width="95dp"
-		android:layout_height="20dp"
-		android:layout_centerHorizontal="true"/>
+
+                        <Spinner
+                            android:id="@+id/spiner_dist"
+                            android:layout_width="95dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="20dp"
+                            android:background="@drawable/drop_list" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -212,31 +275,38 @@
                             android:text="县区 : "
                             android:textColor="#0066ff"
                             android:textSize="20dip" />
-      <Spinner 
-        android:id="@+id/spiner_city"
-		android:layout_marginLeft="20dp"
-		android:background="@drawable/drop_list"
-		android:layout_width="95dp"
-		android:layout_height="20dp"
-		android:layout_centerHorizontal="true"/>
+
+                        <Spinner
+                            android:id="@+id/spiner_city"
+                            android:layout_width="95dp"
+                            android:layout_height="20dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="20dp"
+                            android:background="@drawable/drop_list" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal" >
+
                         <Button
+                            android:id="@+id/confirm"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/confirm"
+                            android:background="@drawable/buttonselect"
                             android:text="确定 "
-                            android:textColor="#0066ff"
+                            android:textColor="#ffffff"
                             android:textSize="20dip" />
+
                         <Button
                             android:id="@+id/cancle"
-                            android:text="取消"
-                            android:textSize="20sp"
+                            android:textColor="#ffffff"
+                              android:background="@drawable/buttonselect"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="取消"
+                            android:textSize="20sp" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

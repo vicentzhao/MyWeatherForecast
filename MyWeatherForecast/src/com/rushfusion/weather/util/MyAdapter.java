@@ -1,6 +1,10 @@
-package com.rushfusion.weather;
+package com.rushfusion.weather.util;
 
 import java.util.List;
+
+import com.rushfusion.weather.R;
+import com.rushfusion.weather.R.id;
+import com.rushfusion.weather.R.layout;
 
 import android.content.Context;
 import android.view.LayoutInflater;

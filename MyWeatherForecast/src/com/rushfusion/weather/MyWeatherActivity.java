@@ -6,19 +6,16 @@ import java.util.List;
 
 import org.w3c.dom.Node;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
-import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,7 +24,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 import com.rushfusion.weather.util.DateUtil;
 import com.rushfusion.weather.util.WeatherService;
@@ -57,19 +54,23 @@ public class MyWeatherActivity implements Runnable {
 	private View textEntryView;
 	private ViewGroup mContainer = null;
 	private ListView listview;
-	private Spinner spiner_city ;
-	private Spinner spiner_dist ;
-	private Spinner spiner_pro ;
+	private Spinner spiner_city;
+	private Spinner spiner_dist;
+	private Spinner spiner_pro;
 	private View selectcity;
 	private View tvforcastshow;
+	private View forcast_reflash;
 	private TextView spinner_textview;
+	private Button nextday1;
 
 	private static final String LOG_TAG = "MyWeather";
-	private String DefaultCtiy = "ÉÏº£";
+	private int isToday = 1;
+	private String DefaultCtiy = "ä¸Šæµ·";
 	private String private_city;
 	private String citynameforselct;
 	private String cityCode;
 	private int viewNumber = 1;
+	private Long startTimer;
 
 	private ArrayAdapter<String> spiner_distAdapter;
 	private ArrayAdapter<String> spiner_proAdapter;
@@ -103,6 +104,7 @@ public class MyWeatherActivity implements Runnable {
 		mContainer.removeAllViews();
 		mContainer.addView(view, lp);
 		initData();
+		startTimer = System.currentTimeMillis();
 		if (!weatherService.isDBExist()) {
 			String title = mContext.getResources().getString(
 					R.string.dialogtitle);
@@ -117,94 +119,134 @@ public class MyWeatherActivity implements Runnable {
 				e.printStackTrace();
 			}
 		}
-			 new  AsyncTask<Void, Void, Void>(){
-				@Override
-				protected Void doInBackground(Void... params) {
-					if (viewNumber == 1 || viewNumber == 6) {
-						shezhi_button.post(new  Runnable() {
-							public void run() {
-							 	shezhi_button.requestFocus();
-							}
-						});
-						SharedPreferences citysetting = mContext.getSharedPreferences(
-								"setting", Context.MODE_PRIVATE);
-						final String ecityname = citysetting.getString("private_city",
-								DefaultCtiy);
-						cityname.post(new  Runnable() {
-							public void run() {
-								
-								cityname.setText(ecityname);
-							}
-						});
-						cityCode = weatherService.getCityCode(ecityname);
-						try {
-							weatherInfo = weatherService.getWeatherInfo(cityCode);
-							System.out.println("WEATHERINFO"+weatherInfo.getCity());
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+		new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected void onPreExecute() {
+				tvforcastshow.setVisibility(View.GONE);
+				forcast_reflash.setVisibility(View.VISIBLE);
+				super.onPreExecute();
+			}
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				if (viewNumber == 1 || viewNumber == 6) {
+					shezhi_button.post(new Runnable() {
+						public void run() {
+							shezhi_button.requestFocus();
 						}
-					}
-					getList();
-					return null;
-				}
-				@Override
-				protected void onPostExecute(Void result) {
-					if (viewNumber == 1 || viewNumber == 6) {
-						DateUtil dateUtil = new DateUtil();
-						String[] currDay = dateUtil.getCurrDay();
-						curntime.setText(currDay[0]);
-						week.setText(currDay[1]);
-						int ereleasetime = weatherInfo.getFchh();
-						String sreleasetime = ereleasetime + " Ê±·¢²¼";
-						releasetime.setText(sreleasetime);
-						String efengli = weatherInfo.getWind1();
-						fengli.setText(efengli);
-						String eqiwen = weatherInfo.getTemp1();
-						qiwen.setText(eqiwen);
-						String eshushidu = weatherInfo.getIndex_co();
-						shushidu.setText(eshushidu);
-						String etianqi = weatherInfo.getWeather1();
-						tianqi.setText(etianqi);
-						String eimage = weatherInfo.getImg_title1();
-						getImage(eimage);
-					} else {
-						shezhi_button.setFocusable(true);
-						SharedPreferences citysetting = mContext.getSharedPreferences(
-								"setting", Context.MODE_PRIVATE);
-						String ecityname = citysetting.getString("private_city",
-								DefaultCtiy);
-						cityname.setText(ecityname);
-						int numberofdata = viewNumber - 2;
-						curntime.setText(datelist.get(numberofdata));
-						week.setText(weeklist.get(numberofdata));
-						qiwen.setText(weatherlist.get(numberofdata));
-						tianqi.setText(templist.get(numberofdata));
-						String eimage = imagelist.get(numberofdata);
-						getImage(eimage);
-						shezhi_button.setVisibility(View.GONE);
+					});
+					SharedPreferences citysetting = mContext
+							.getSharedPreferences("setting",
+									Context.MODE_PRIVATE);
+					final String ecityname = citysetting.getString(
+							"private_city", DefaultCtiy);
+					cityname.post(new Runnable() {
+						public void run() {
 
+							cityname.setText(ecityname);
+						}
+					});
+					cityCode = weatherService.getCityCode(ecityname);
+					try {
+						weatherInfo = weatherService.getWeatherInfo(cityCode);
+						System.out.println("WEATHERINFO"
+								+ weatherInfo.getCity());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					super.onPostExecute(result);
 				}
-				
-				
-				 
-			 }.execute();
-			
-		
+				getList();
+				return null;
+			}
 
-		
+			@Override
+			protected void onPostExecute(Void result) {
+				forcast_reflash.setVisibility(View.GONE);
+				tvforcastshow.setVisibility(View.VISIBLE);
+				if (viewNumber == 1 || viewNumber == 6) {
+					DateUtil dateUtil = new DateUtil();
+					String[] currDay = dateUtil.getCurrDay();
+					curntime.setText(currDay[0]);
+					week.setText(currDay[1]);
+					int ereleasetime = weatherInfo.getFchh();
+					String sreleasetime = ereleasetime + " æ—¶å‘å¸ƒ";
+					releasetime.setText(sreleasetime);
+					String efengli = weatherInfo.getWind1();
+					fengli.setText(efengli);
+					String eqiwen = weatherInfo.getTemp1();
+					qiwen.setText(eqiwen);
+					String eshushidu = weatherInfo.getIndex_co();
+					shushidu.setText(eshushidu);
+					String etianqi = weatherInfo.getWeather1();
+					tianqi.setText(etianqi);
+					String eimage = weatherInfo.getImg_title1();
+					getImage(eimage);
+				} else {
+					shezhi_button.setFocusable(true);
+					SharedPreferences citysetting = mContext
+							.getSharedPreferences("setting",
+									Context.MODE_PRIVATE);
+					String ecityname = citysetting.getString("private_city",
+							DefaultCtiy);
+					cityname.setText(ecityname);
+					int numberofdata = viewNumber - 2;
+					curntime.setText(datelist.get(numberofdata));
+					week.setText(weeklist.get(numberofdata));
+					qiwen.setText(weatherlist.get(numberofdata));
+					tianqi.setText(templist.get(numberofdata));
+					String eimage = imagelist.get(numberofdata);
+					getImage(eimage);
+					shezhi_button.setVisibility(View.GONE);
+				}
+				super.onPostExecute(result);
+			}
+		}.execute();
+		shezhi_button.requestFocus();
 		shezhi_button.setFocusable(true);
 		shezhi_button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				shezhi_button.setOnClickListener(new sCarButtonListener());
+				Calendar c = Calendar.getInstance();
+				c.add(c.DAY_OF_YEAR, 1);
+				DateUtil dt = new DateUtil();
+				String[] currDay = dt.getCurrDay(c);
+				System.out.println("onclickæ˜å¤©çš„æ—¥æœŸæ˜¯====ã€‹ã€‹ã€‹" + currDay[0]
+						+ currDay[1]);
+			}
+		});
+		shezhi_button.setOnKeyListener(new OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+					long dis = getDis();
+					if (dis < 1000) {
+						System.out.println("KEYCODE_DPAD_LEFT==è¿™ä¸ªé”®ç‚¹å‡»çš„æœ‰äº›é¢‘ç¹");
+					} else {
+						Calendar c = Calendar.getInstance();
+						c.add(c.DAY_OF_YEAR, -1);
+						DateUtil dt = new DateUtil();
+						String[] currDay = dt.getCurrDay(c);
+						System.out.println("leftæ˜å¤©çš„æ—¥æœŸæ˜¯====ã€‹ã€‹ã€‹" + currDay[0]
+								+ currDay[1]);
+					}
+				}
+				return false;
+			}
+		});
+		nextday1.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			System.out.println("æˆ‘å·²ç»è¢«ç‚¹å‡»====nextday1");
+			Toast.makeText(mContext, "nextday1,æˆ‘å·²ç»è¢«ç‚¹å‡»", 1).show();
 			}
 		});
 	}
-
 	/**
-	 * ³õÊ¼»¯Êı¾İ
+	 * åˆå§‹åŒ–æ•°æ®
 	 */
 	private void initData() {
 		shezhi_button = (Button) view.findViewById(R.id.shezhi_button);
@@ -221,38 +263,39 @@ public class MyWeatherActivity implements Runnable {
 		spiner_city = (Spinner) view.findViewById(R.id.spiner_city);
 		spiner_dist = (Spinner) view.findViewById(R.id.spiner_dist);
 		spiner_pro = (Spinner) view.findViewById(R.id.spiner_pro);
-		selectcity =view.findViewById(R.id.selectcity);
-		tvforcastshow =view.findViewById(R.id.tvforcastshow);
-		confirm =(Button) view.findViewById(R.id.confirm);
-		cancle  =(Button) view.findViewById(R.id.cancle);
-		spinner_textview =(TextView) view.findViewById(R.id.spinner_textview);
+		selectcity = view.findViewById(R.id.selectcity);
+		tvforcastshow = view.findViewById(R.id.tvforcastshow);
+		confirm = (Button) view.findViewById(R.id.confirm);
+		cancle = (Button) view.findViewById(R.id.cancle);
+		spinner_textview = (TextView) view.findViewById(R.id.spinner_textview);
+		forcast_reflash = (View) view.findViewById(R.id.forcast_reflash);
+		 nextday1 = (Button) view.findViewById(R.id.nextday1);
 	}
-
 	/**
-	 * Í¨¹ı²»Í¬µÄÃèÊöÑ¡ÓÃÏàÓ¦µÄÍ¼Æ¬
+	 * é€šè¿‡ä¸åŒçš„æè¿°é€‰ç”¨ç›¸åº”çš„å›¾ç‰‡
 	 * 
 	 * @param eimage
 	 */
 	private void getImage(String eimage) {
-		if ("¶àÔÆ".equals(eimage)) {
+		if ("å¤šäº‘".equals(eimage)) {
 			image.setImageResource(R.drawable.weather_mostlycloudy);
-		} else if ("Çç".equals(eimage)) {
+		} else if ("æ™´".equals(eimage)) {
 			image.setImageResource(R.drawable.weather_fog);
-		} else if ("Òõ".equals(eimage)) {
+		} else if ("é˜´".equals(eimage)) {
 			image.setImageResource(R.drawable.weather_dust);
 			// }else
-			// if("Ğ¡Óê".equals(eimage)||"´óÓê".equals(eimage)||"ÖĞÓê".equals(eimage)||"±©Óê".equals(eimage)||"ÕóÓê".equals(eimage)){
-		} else if (eimage.contains("Óê")) {
+			// if("å°é›¨".equals(eimage)||"å¤§é›¨".equals(eimage)||"ä¸­é›¨".equals(eimage)||"æš´é›¨".equals(eimage)||"é˜µé›¨".equals(eimage)){
+		} else if (eimage.contains("é›¨")) {
 			image.setImageResource(R.drawable.weather_rain);
-		} else if ("ÕóÑ©".equals(eimage) || "Ğ¡Ñ©".equals(eimage)
-				|| "´óÑ©".equals(eimage) || "ÖĞÑ©".equals(eimage)
-				|| "±©Ñ©".equals(eimage)) {
+		} else if ("é˜µé›ª".equals(eimage) || "å°é›ª".equals(eimage)
+				|| "å¤§é›ª".equals(eimage) || "ä¸­é›ª".equals(eimage)
+				|| "æš´é›ª".equals(eimage)) {
 			image.setImageResource(R.drawable.weather_snow);
 		}
 	}
 
 	/**
-	 * °ÑµÃµ½µÄÊı¾İ·Ö±ğ·ÅÔÚÏàÓ¦µÄlistÀï
+	 * æŠŠå¾—åˆ°çš„æ•°æ®åˆ†åˆ«æ”¾åœ¨ç›¸åº”çš„listé‡Œ
 	 */
 	public void getList() {
 		DateUtil dateutil = new DateUtil();
@@ -312,38 +355,40 @@ public class MyWeatherActivity implements Runnable {
 	}
 
 	/**
-	 * ÉèÖÃÊ¡ÊĞÏØÈı¼¶Áª¶¯£¬ÀûÓÃspinner
+	 * è®¾ç½®çœå¸‚å¿ä¸‰çº§è”åŠ¨ï¼Œåˆ©ç”¨spinner
 	 */
 	private void showDialog_SCar() {
 		selectcity.setVisibility(View.VISIBLE);
 		tvforcastshow.setVisibility(View.GONE);
 		service = new WeatherService(mContext);
 		allProv = service.getAllProv();
-		
+
 		spiner_proAdapter = new ArrayAdapter<String>(mContext,
 				R.drawable.drop_list_hover, allProv);
 		spiner_proAdapter.setDropDownViewResource(R.drawable.drop_list_ys);
-//		spiner_proAdapter = new MyAdapter(mContext,allProv);
+		// spiner_proAdapter = new MyAdapter(mContext,allProv);
 		spiner_pro.setAdapter(spiner_proAdapter);
-		spiner_pro.setPrompt("ÇëÑ¡ÔñÏàÓ¦µÄÊ¡ÊĞ");
-		// Ñ¡ÔñÊ¡¼àÌıÊÂ¼ş
+		spiner_pro.setPrompt("è¯·é€‰æ‹©ç›¸åº”çš„çœå¸‚");
+		// é€‰æ‹©çœç›‘å¬äº‹ä»¶
 		spiner_pro
 				.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
 					public void onItemSelected(AdapterView<?> arg0, View arg1,
 							int postion, long arg3) {
-						// ¸ù¾İÊ¡°ó¶¨ÊĞÇø
-						System.out.println("ÎÒÒÑ¾­±»Ñ¡ÖĞÁË£¬¹ş¹ş¹ş¹ş");
+						// æ ¹æ®çœç»‘å®šå¸‚åŒº
+						System.out.println("æˆ‘å·²ç»è¢«é€‰ä¸­äº†ï¼Œå“ˆå“ˆå“ˆå“ˆ");
 						String provname = allProv.get(postion);
 						int proid = service.getproid(provname);
 						distname = service.getDist(proid);
-//						spiner_distAdapter = new MyAdapter(mContext,distname);
-//						spiner_dist.setAdapter(spiner_distAdapter);
+						// spiner_distAdapter = new
+						// MyAdapter(mContext,distname);
+						// spiner_dist.setAdapter(spiner_distAdapter);
 						spiner_distAdapter = new ArrayAdapter<String>(mContext,
 								R.drawable.drop_list_hover, distname);
-						spiner_distAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-						spiner_dist.setPrompt("ÇëÑ¡Ôñ");
+						spiner_distAdapter
+								.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+						spiner_dist.setPrompt("è¯·é€‰æ‹©");
 						spiner_dist.setAdapter(spiner_distAdapter);
-						/* ½«mySpinner ÏÔÊ¾ */
+						/* å°†mySpinner æ˜¾ç¤º */
 						arg0.setVisibility(View.VISIBLE);
 					}
 
@@ -351,24 +396,26 @@ public class MyWeatherActivity implements Runnable {
 					}
 				});
 
-		// Ñ¡ÔñÊĞÇøÊÂ¼ş
+		// é€‰æ‹©å¸‚åŒºäº‹ä»¶
 		spiner_dist
 				.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
 					public void onItemSelected(AdapterView<?> arg0, View arg1,
 							int arg2, long arg3) {
 						String sqldistname = distname.get(arg2);
 						citynamelist = service.getCityname(sqldistname);
-						// ¸ù¾İÊĞÇø°ó¶¨ÏØÊĞ
-//						spiner_cityAdapter = new MyAdapter(mContext,citynamelist);
-//
-//						spiner_city.setAdapter(spiner_cityAdapter);
+						// æ ¹æ®å¸‚åŒºç»‘å®šå¿å¸‚
+						// spiner_cityAdapter = new
+						// MyAdapter(mContext,citynamelist);
+						//
+						// spiner_city.setAdapter(spiner_cityAdapter);
 						spiner_cityAdapter = new ArrayAdapter<String>(mContext,
 								R.drawable.drop_list_hover, citynamelist);
-						spiner_cityAdapter.setDropDownViewResource(R.drawable.drop_list_ys);
-						spiner_city.setPrompt("ÇëÑ¡Ôñ");
+						spiner_cityAdapter
+								.setDropDownViewResource(R.drawable.drop_list_ys);
+						spiner_city.setPrompt("è¯·é€‰æ‹©");
 						spiner_city.setAdapter(spiner_cityAdapter);
 						// chexiSpinner.setSelection(0, true);
-						/* ½«mySpinner ÏÔÊ¾ */
+						/* å°†mySpinner æ˜¾ç¤º */
 						arg0.setVisibility(View.VISIBLE);
 					}
 
@@ -377,7 +424,7 @@ public class MyWeatherActivity implements Runnable {
 				});
 
 		/**
-		 * ¿h³ÇµÄüc“ôÊÂ¼ş
+		 * ç¸£åŸçš„é»æ“Šäº‹ä»¶
 		 */
 		spiner_city
 				.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
@@ -392,38 +439,40 @@ public class MyWeatherActivity implements Runnable {
 					}
 				});
 		/**
-		 * ÉèÖÃµ¯³ö¿ò
+		 * è®¾ç½®å¼¹å‡ºæ¡†
 		 */
 
-//		final AlertDialog.Builder builder = new AlertDialog.Builder(
-//				new ContextThemeWrapper(mContext, R.style.dialog));
-//		builder.setCancelable(false);
-//		builder.setIcon(R.drawable.icon);
-//		builder.setTitle("Ñ¡ÔñµØÇø");
-//		builder.setView(textEntryView);
-//		builder.setPositiveButton("È·ÈÏ", new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int whichButton) {
-//				SharedPreferences citysetting = mContext.getSharedPreferences(
-//						"setting", Context.MODE_PRIVATE);
-//				Editor edit = citysetting.edit();
-//				edit.putString("private_city", citynameforselct);
-//				edit.commit();
-//				String string = citysetting.getString("private_city", "hello");
-//				run();
-//			}
-//		});
-//		builder.setNegativeButton("È¡Ïû", new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int whichButton) {
-//			}
-//		});
-//		AlertDialog dialog = builder.create();
-//		builder.show();
-//		WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-//		params.width = 10;
-//		params.height = 10;
-//		dialog.getWindow().setAttributes(params);
+		// final AlertDialog.Builder builder = new AlertDialog.Builder(
+		// new ContextThemeWrapper(mContext, R.style.dialog));
+		// builder.setCancelable(false);
+		// builder.setIcon(R.drawable.icon);
+		// builder.setTitle("é€‰æ‹©åœ°åŒº");
+		// builder.setView(textEntryView);
+		// builder.setPositiveButton("ç¡®è®¤", new DialogInterface.OnClickListener()
+		// {
+		// public void onClick(DialogInterface dialog, int whichButton) {
+		// SharedPreferences citysetting = mContext.getSharedPreferences(
+		// "setting", Context.MODE_PRIVATE);
+		// Editor edit = citysetting.edit();
+		// edit.putString("private_city", citynameforselct);
+		// edit.commit();
+		// String string = citysetting.getString("private_city", "hello");
+		// run();
+		// }
+		// });
+		// builder.setNegativeButton("å–æ¶ˆ", new DialogInterface.OnClickListener()
+		// {
+		// public void onClick(DialogInterface dialog, int whichButton) {
+		// }
+		// });
+		// AlertDialog dialog = builder.create();
+		// builder.show();
+		// WindowManager.LayoutParams params =
+		// dialog.getWindow().getAttributes();
+		// params.width = 10;
+		// params.height = 10;
+		// dialog.getWindow().setAttributes(params);
 		confirm.setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				selectcity.setVisibility(View.GONE);
@@ -435,20 +484,19 @@ public class MyWeatherActivity implements Runnable {
 				edit.commit();
 				String string = citysetting.getString("private_city", "hello");
 				run();
-				
+
 			}
 		});
 		cancle.setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				selectcity.setVisibility(View.GONE);
 				tvforcastshow.setVisibility(View.VISIBLE);
-				
 			}
 		});
 	}
-	// µ¥»÷ÊÂ¼ş
+
+	// å•å‡»äº‹ä»¶
 	private class sCarButtonListener implements
 			android.view.View.OnClickListener {
 		public void onClick(View v) {
@@ -456,4 +504,11 @@ public class MyWeatherActivity implements Runnable {
 		}
 	}
 
+	public long getDis() {
+		long currenttimer = System.currentTimeMillis();
+		long distime = currenttimer - startTimer;
+		System.out.println("distime===========>" + distime);
+		startTimer = currenttimer;
+		return distime;
+	}
 }
