@@ -1,24 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.rushfusion.weather"
-      android:versionCode="1"
-      android:versionName="1.0">
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission><uses-sdk android:minSdkVersion="8" />
-    <application android:icon="@drawable/icon" android:label="@string/app_name"
-      
-    >
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
-        <activity android:name=".TestActivity"
-          android:theme="@android:style/Theme.NoTitleBar"
-                  android:label="@string/app_name">
+    package="com.rushfusion.weather"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-sdk android:minSdkVersion="8" />
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/app_name" >
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
+        </uses-permission>
+        <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" >
+        </uses-permission>
+
+        <activity
+            android:name=".TestActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SpinnerSap" android:label="@string/app_name"
-			android:configChanges="orientation|keyboardHidden">
-		</activity>
+        <activity
+            android:name=".SpinnerSap"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name" >
+        </activity>
     </application>
+
 </manifest>

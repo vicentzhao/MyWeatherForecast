@@ -69,7 +69,7 @@ public class MyWeatherActivity implements Runnable {
 
 	private static final String LOG_TAG = "MyWeather";
 	private int isToday = 1;
-	private String DefaultCtiy = "上海";
+	private String DefaultCtiy = "北京";
 	private String private_city;
 	private String citynameforselct;
 	private String cityCode;
@@ -99,7 +99,11 @@ public class MyWeatherActivity implements Runnable {
 
 	public void run() {
 		showData();
-
+		System.out.println(mContext.getFilesDir().getParentFile());
+//		WeatherService ws = new WeatherService(mContext);
+//		ArrayList<String> cityname =  ws.getname("city");
+//		ArrayList<String> pinyinList = ws.getPinyin(cityname);
+//		ws.insertData(cityname, pinyinList, "city");
 	}
 
 	public void showData() {

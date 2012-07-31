@@ -6,6 +6,8 @@
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
       android:textColor="#84DB18"
+      android:textSize="28sp"
       android:background="@drawable/itme_selector"
-    android:ellipsize="marquee" />
+    android:ellipsize="marquee" 
+    />
  

@@ -8,16 +8,23 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Data;
+import android.provider.ContactsContract.RawContacts;
+import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.util.Log;
 public class WeatherService {
 	File databaseDir;
 	private String DBNAME = "weather_rushfunsion.db";
-	private Context context;
+	private Context mContext;
 	public WeatherService(Context context) {
-		this.context=context;
+		this.mContext=context;
 	}
 	
 	/**
@@ -25,14 +32,15 @@ public class WeatherService {
 	 * @return
 	 */
 	public boolean isDBExist() {
-		File file = context.getDatabasePath(DBNAME);//获取数据库文件的File对象，会在应用所在包的databases文件夹下寻找该文件
+		File file = mContext.getDatabasePath(DBNAME);//获取数据库文件的File对象，会在应用所在包的databases文件夹下寻找该文件
 		return file.exists();
 	}
 	/**
 	 * 拷内数据库至应用所在包的databases文件夹下
 	 */
 	public void copyDB() throws Exception {
-		 databaseDir = new File(context.getFilesDir().getParentFile(), "databases");// <包>/databases
+		 databaseDir = new File(mContext.getFilesDir().getParentFile(), "databases");// <包>/databases
+		
 		if(!databaseDir.exists()) databaseDir.mkdirs();
 		File dbFile = new File(databaseDir, DBNAME);
 		FileOutputStream outStream = new FileOutputStream(dbFile);
@@ -52,7 +60,7 @@ public class WeatherService {
 	 */
 	public String  getCityCode(String city){
 		String  cityKey=null;
-	   SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("weather_rushfunsion.db") ,null);
+	   SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(mContext.getDatabasePath("weather_rushfunsion.db") ,null);
 		Log.d("isOpen", "db:>>>"+db.isOpen()) ;
 		String path = db.getPath();
 		Cursor cursor = db.query("city", new String[]{"cityKey"},
@@ -76,7 +84,7 @@ public class WeatherService {
 	 */
 	public List<String> getAllProv(){
 		List<String> prov = new ArrayList<String>();
-		   SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("weather_rushfunsion.db") ,null);
+		   SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(mContext.getDatabasePath("weather_rushfunsion.db") ,null);
       Cursor cursor = db.rawQuery("select ProvName from  prov",null);
       for(cursor.moveToNext();!cursor.isAfterLast();cursor.moveToNext()){
 			String  provname = cursor.getString(cursor.getColumnIndex("ProvName"));
@@ -96,7 +104,7 @@ public class WeatherService {
 	public int getproid(String name){
 		int  id =0;
 		List<String> prov = new ArrayList<String>();
-		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("weather_rushfunsion.db") ,null);
+		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(mContext.getDatabasePath("weather_rushfunsion.db") ,null);
 		Cursor cursor = db.rawQuery("select id from  prov where ProvName =? ",new String[]{name});
 		if(cursor.moveToFirst()){
 			id = cursor.getInt(cursor.getColumnIndex("id"));
@@ -115,7 +123,7 @@ public class WeatherService {
 	 */
 	public List<String> getCityname(String name){
 		List<String> cityname = new ArrayList<String>();
-		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("weather_rushfunsion.db") ,null);
+		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(mContext.getDatabasePath("weather_rushfunsion.db") ,null);
 		Cursor cursor = db.rawQuery("select cityname from city where city.districtid=(select id from district where districtname=?) ",new String[]{name});
 		for(cursor.moveToNext();!cursor.isAfterLast();cursor.moveToNext()){
 			String  distname = cursor.getString(cursor.getColumnIndex("cityName"));
@@ -134,7 +142,7 @@ public class WeatherService {
 	 */
 	 public List<String> getDist(int provid){
 		 List<String> dist = new ArrayList<String>();
-		   SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("weather_rushfunsion.db") ,null);
+		   SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(mContext.getDatabasePath("weather_rushfunsion.db") ,null);
     Cursor cursor = db.rawQuery("select districtName from district  where proId ="+provid+"",null);
     for(cursor.moveToNext();!cursor.isAfterLast();cursor.moveToNext()){
 			String  distname = cursor.getString(cursor.getColumnIndex("districtName"));
@@ -280,5 +288,88 @@ public class WeatherService {
     	  wi.setImg_title12(js.getString("img_title12"));
     	  wi.setIndex_co(js.getString("index_co"));
     	 return wi;
+     }
+     
+     /**
+      * 这个是辅助类，自用，用来增加pinyin这个列
+      * 
+      */
+     public ArrayList<String> getname(String name){
+    	 ArrayList<String> cityname = new ArrayList<String>();
+ 		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(mContext.getDatabasePath("weather_rushfunsion.db") ,null);
+ 		Cursor cursor = db.rawQuery("select "+name+"Name from "+name+" ",new String[]{});
+ 		for(cursor.moveToNext();!cursor.isAfterLast();cursor.moveToNext()){
+ 			String  distname = cursor.getString(cursor.getColumnIndex(""+name+"Name"));
+ 			cityname.add(distname);
+ 		}
+     if(!cursor.isClosed()){
+ 		cursor.close();
+ 		}
+ 		db.close();
+ 		return cityname;
+ 	}
+     //汉字转为拼音
+     public String hanziToPinyin(long rawContactId){  
+         String result="";  
+       
+         String Where = ContactsContract.RawContacts.CONTACT_ID+ " ="+rawContactId;  
+         String[] projection = {"sort_key" };  
+         Cursor cur = mContext.getContentResolver().query(ContactsContract.RawContacts.CONTENT_URI, projection, Where, null, null);  
+         int pinyin1=cur.getColumnIndex("sort_key");  
+         cur.moveToFirst();  
+         String pinyin=cur.getString(pinyin1); 
+         if(!cur.isClosed()){
+        	 cur.close();
+         }
+         System.out.println("rawContactId==="+rawContactId+"pinyin=====>"+pinyin);
+         //因为此处得到的事ZHANG张SAN三这个形式，所以下面对这个字符串做处理，将它变成 zhang san  
+         for(int i=0;i<pinyin.length();i++){  
+         String temp=pinyin.substring(i,i+1);  
+             if(temp.matches("[a-zA-Z]")){  
+                 result=result+temp; 
+             }  
+         }  
+         return result.toLowerCase();
+     }  
+     
+     public void delete(long rawContactId)  
+     {  
+        mContext.getContentResolver().delete(ContentUris.withAppendedId(RawContacts.CONTENT_URI, rawContactId), null, null);
+     }  
+     
+     //根据城市得到相应的拼音
+     public ArrayList<String> getPinyin(ArrayList<String> cityList){
+    	 ArrayList<String> pinyinList = new ArrayList<String>();
+         for (int i = 0; i < cityList.size(); i++) {
+			String cityname = cityList.get(i);
+			ContentValues values = new ContentValues();  
+			Uri rawContactUri =  mContext.getContentResolver().insert(RawContacts.CONTENT_URI, values);  
+			long rawContactId = ContentUris.parseId(rawContactUri);    
+			 if (cityname.length()!=0)  
+             {  
+                 values.clear();  
+                 values.put(Data.RAW_CONTACT_ID, rawContactId);  
+                 values.put(Data.MIMETYPE,StructuredName.CONTENT_ITEM_TYPE);  
+                 values.put(StructuredName.GIVEN_NAME, cityname);  
+                 mContext.getContentResolver().insert(ContactsContract.Data.CONTENT_URI,values);  
+                 String pinyin = hanziToPinyin(rawContactId); 
+                 pinyinList.add(pinyin);
+                 delete(rawContactId);  
+             } 
+		}
+         return pinyinList;
+     }
+      //把数据插入到数据库的对应的表中
+     public void insertData(ArrayList<String> cityList,ArrayList<String> pinyinList,String tableName){
+    	 ContentValues values=new ContentValues();
+    	 SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(mContext.getDatabasePath("weather_rushfunsion.db") ,null);
+    	 for (int i = 0; i < cityList.size(); i++) {
+    		 String pinyin = pinyinList.get(i);
+    		 values.put("pinyinfor"+tableName+"", pinyin);
+    		 System.out.println("insertData=====我已经执行过一次");
+    		 //相当于set name=Beauty where id=3
+    		 db.update(tableName, values,""+tableName+"Name=?" ,new String[]{cityList.get(i)});
+		}
+    	 db.close();
      }
 }
