@@ -253,7 +253,6 @@ public class MyWeatherActivity implements Runnable {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 			System.out.println("我已经被点击====nextday1");
-			Toast.makeText(mContext, "nextday1,我已经被点击", 1).show();
 			}
 		});
 		

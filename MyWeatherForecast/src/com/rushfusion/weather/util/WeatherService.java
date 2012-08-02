@@ -85,7 +85,7 @@ public class WeatherService {
 	public List<String> getAllProv(){
 		List<String> prov = new ArrayList<String>();
 		   SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(mContext.getDatabasePath("weather_rushfunsion.db") ,null);
-      Cursor cursor = db.rawQuery("select ProvName from  prov",null);
+      Cursor cursor = db.rawQuery("select ProvName from  prov order by pinyinforprov",null);
       for(cursor.moveToNext();!cursor.isAfterLast();cursor.moveToNext()){
 			String  provname = cursor.getString(cursor.getColumnIndex("ProvName"));
 			prov.add(provname);
@@ -124,7 +124,7 @@ public class WeatherService {
 	public List<String> getCityname(String name){
 		List<String> cityname = new ArrayList<String>();
 		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(mContext.getDatabasePath("weather_rushfunsion.db") ,null);
-		Cursor cursor = db.rawQuery("select cityname from city where city.districtid=(select id from district where districtname=?) ",new String[]{name});
+		Cursor cursor = db.rawQuery("select cityname from city where city.districtid=(select id from district where districtname=?) order by pinyinforcity ",new String[]{name});
 		for(cursor.moveToNext();!cursor.isAfterLast();cursor.moveToNext()){
 			String  distname = cursor.getString(cursor.getColumnIndex("cityName"));
 			cityname.add(distname);
@@ -143,7 +143,7 @@ public class WeatherService {
 	 public List<String> getDist(int provid){
 		 List<String> dist = new ArrayList<String>();
 		   SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(mContext.getDatabasePath("weather_rushfunsion.db") ,null);
-    Cursor cursor = db.rawQuery("select districtName from district  where proId ="+provid+"",null);
+    Cursor cursor = db.rawQuery("select districtName from district  where proId ="+provid+" order by pinyinfordistrict",null);
     for(cursor.moveToNext();!cursor.isAfterLast();cursor.moveToNext()){
 			String  distname = cursor.getString(cursor.getColumnIndex("districtName"));
 			dist.add(distname);
